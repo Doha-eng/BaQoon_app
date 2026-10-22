@@ -1,0 +1,26 @@
+workflows:
+  baqoon-android:
+    name: Baqoon Android
+    max_build_duration: 30
+    instance_type: linux_x2
+    environment:
+      flutter: stable
+    scripts:
+      - name: Arrange source files
+        script: |
+          mkdir -p lib/theme lib/data lib/screens lib/widgets
+          mv -f main.dart lib/
+          mv -f colors.dart text_styles.dart lib/theme/
+          mv -f models.dart dummy_data.dart lib/data/
+          mv -f home_screen.dart person_screen.dart add_story_screen.dart notifications_screen.dart charity_screen.dart lib/screens/
+          mv -f family_tree_painter.dart lib/widgets/
+      - name: Create Android project files
+        script: flutter create --platforms=android --org com.baqoon --project-name baqoon_app .
+      - name: Allow internet (needed for Arabic fonts)
+        script: sed -i 's|<application|<uses-permission android:name="android.permission.INTERNET"/>\n    <application|' android/app/src/main/AndroidManifest.xml
+      - name: Get packages
+        script: flutter pub get
+      - name: Build APK
+        script: flutter build apk --release
+    artifacts:
+      - build/app/outputs/flutter-apk/*.apk
