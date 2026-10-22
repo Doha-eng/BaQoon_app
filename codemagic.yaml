@@ -2,7 +2,7 @@ workflows:
   baqoon-android:
     name: Baqoon Android
     max_build_duration: 30
-    instance_type: linux_x2
+    instance_type: mac_mini_m2
     environment:
       flutter: stable
     scripts:
@@ -17,7 +17,7 @@ workflows:
       - name: Create Android project files
         script: flutter create --platforms=android --org com.baqoon --project-name baqoon_app .
       - name: Allow internet (needed for Arabic fonts)
-        script: sed -i 's|<application|<uses-permission android:name="android.permission.INTERNET"/>\n    <application|' android/app/src/main/AndroidManifest.xml
+        script: perl -0pi -e 's|<application|<uses-permission android:name="android.permission.INTERNET"/>\n    <application|' android/app/src/main/AndroidManifest.xml
       - name: Get packages
         script: flutter pub get
       - name: Build APK
